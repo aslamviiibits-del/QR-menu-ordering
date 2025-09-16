@@ -37,6 +37,7 @@
       .cart{position:fixed; left:0; right:0; bottom:0; max-height:60vh; transform:translateY(calc(100% - 48px)); transition:transform .3s ease; border-radius:18px 18px 0 0;}
       .cart.open{transform:translateY(0)}
       .cart h3{cursor:pointer; text-align:center;}
+      .floating-cart{display:flex;}
     }
 
     .hero{grid-column:1/-1; background:#fff3e0; border:1px solid #ffe0b2; padding:18px; border-radius:var(--radius); box-shadow:var(--shadow)}
@@ -62,6 +63,10 @@
     .grand{font-weight:700; font-size:16px; color:var(--brand)}
     .footer{display:flex; gap:10px; padding:12px 16px 16px 16px}
     .footer .btn{flex:1}
+
+    .floating-cart{position:fixed; bottom:80px; right:20px; background:var(--accent); color:#fff; border-radius:28px; padding:10px 16px; display:none; align-items:center; font-weight:600; font-size:14px; box-shadow:0 4px 12px rgba(0,0,0,.2); cursor:pointer; z-index:200;}
+    .floating-cart .icon{margin-right:8px;}
+    .floating-cart span{background:var(--danger); color:#fff; border-radius:50%; padding:2px 6px; font-size:12px; margin-left:6px;}
   </style>
 </head>
 <body>
@@ -96,6 +101,7 @@
       </div>
       <div class="footer"><button class="btn btn-ghost" id="clearCart">Clear</button><button class="btn btn-accent" id="placeOrder">Place Order</button></div>
     </aside>
+    <div class="floating-cart" id="floatingCart"><div class="icon">🛒</div><div id="floatingTotal">₹0</div><span id="cartCount">0</span></div>
   </main>
   <script>
     const MENU = [
@@ -111,6 +117,9 @@
     const gstEl = document.getElementById('gst');
     const serviceEl = document.getElementById('service');
     const grandEl = document.getElementById('grand');
+    const cartCountEl = document.getElementById('cartCount');
+    const floatingCart = document.getElementById('floatingCart');
+    const floatingTotalEl = document.getElementById('floatingTotal');
 
     let cart = {};
 
@@ -139,8 +148,10 @@
     function renderCart(){
       cartItemsEl.innerHTML = '';
       let subtotal = 0;
+      let count = 0;
       Object.values(cart).forEach(it => {
         subtotal += it.price * it.qty;
+        count += it.qty;
         const row = document.createElement('div');
         row.className = 'item';
         row.innerHTML = `
@@ -163,6 +174,9 @@
       gstEl.textContent = '₹' + gst;
       serviceEl.textContent = '₹' + service;
       grandEl.textContent = '₹' + grand;
+      cartCountEl.textContent = count;
+      floatingTotalEl.textContent = '₹' + grand;
+      floatingCart.style.display = count>0 ? 'flex' : 'none';
     }
 
     function addToCart(id){
@@ -190,9 +204,13 @@
       orderText += `Service: ${serviceEl.textContent}%0A`;
       orderText += `Total: ${grandEl.textContent}`;
 
-      const phone = "918970100123";
+      const phone = "911234567890";
       const url = `https://wa.me/${phone}?text=${orderText}`;
       window.open(url,'_blank');
+    });
+
+    floatingCart.addEventListener('click',()=>{
+      document.getElementById('cart').classList.add('open');
     });
 
     renderMenu();
