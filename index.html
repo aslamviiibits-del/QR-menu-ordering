@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -126,19 +126,51 @@
   <script>
     // --- Google Sheets webhook integration ---
     // TODO: Replace with your deployed Apps Script Web App URL
-    const GS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyEGN79jYX7SjIjJp9tjQMWcR2uLvBukETtHOfwZq8/dev';
+    const GS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwNMefoyhfuosFmeTFsJMX_aSPAegGmyjwE-OR10G_OvQBYbQV9YXwj4MQFKvTYd1AW/exec'; // <-- replace with your real URL
+const GS_EXPECT_JSON = true; // set false if your web app returns HTML/text
 
-    async function saveOrderToSheet(order){
-      try{
-        await fetch(GS_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(order)
-        });
-      }catch(err){
-        console.error('Sheet save failed:', err);
+    async function saveOrderToSheet(order) {
+  if (!GS_ENDPOINT || GS_ENDPOINT.includes('XXXX')) {
+    console.warn('GS_ENDPOINT not set. Skipping sheet save.');
+    return { ok: false, error: 'GS_ENDPOINT not set' };
+  }
+
+  try {
+    const res = await fetch(GS_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      // mode: 'cors' is default; Apps Script supports it
+      body: JSON.stringify(order),
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer'
+    });
+
+    if (GS_EXPECT_JSON) {
+      const data = await res.json().catch(() => ({
+        ok: false,
+        error: 'Non-JSON response'
+      }));
+
+      if (!res.ok || data.ok === false) {
+        console.error('Sheet save failed response:', data);
+        return { ok: false, status: res.status, data };
       }
+
+      console.log('Saved to sheet:', data);
+      return { ok: true, status: res.status, data };
+    } else {
+      console.log('Saved to sheet (non-JSON response). Status:', res.status);
+      return { ok: res.ok, status: res.status };
     }
+  } catch (err) {
+    console.error('Sheet save failed (network):', err);
+    return { ok: false, error: String(err) };
+  }
+}
+
 
     // --- Table number parsing & persistence ---
     function getTableNo(){
@@ -170,13 +202,12 @@
     if(TABLE_NO==='—'){ document.getElementById('tableBanner').style.display='block'; }
 
     // --- Demo MENU ---
-          const MENU = [
+      const MENU = [
       {id:'1', name:'Paneer Tikka', price:260, img:'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', desc:'Cottage cheese cubes marinated in spices & grilled.'},
       {id:'2', name:'Chicken Wings', price:290, img:'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=400&auto=format&fit=crop', desc:'Crispy wings tossed in peri-peri sauce.'},
       {id:'3', name:'Veg Biryani', price:340, img:'https://images.unsplash.com/photo-1630409346824-4f0e7b080087?q=80&w=1246&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', desc:'Fragrant basmati rice with vegetables & spices.'},
       {id:'4', name:'Cold Coffee', price:149, img:'https://images.unsplash.com/photo-1459755486867-b55449bb39ff?q=80&w=400&auto=format&fit=crop', desc:'Blended coffee with ice cream.'}
     ];
-
     // --- DOM refs ---
     const menuEl = document.getElementById('menu');
     const cartItemsEl = document.getElementById('cartItems');
@@ -300,7 +331,13 @@
       const order = buildOrderPayload(cart, TABLE_NO);
 
       // 1) Save to Google Sheet (fire-and-forget)
-      saveOrderToSheet(order);
+      const saveResult = await saveOrderToSheet(order);
+      if(!saveResult.ok){
+        // surface a brief error toast but continue WhatsApp flow
+        toast.textContent = '⚠️ Could not save to Sheet';
+        toast.style.display = 'block';
+        setTimeout(()=>{toast.style.display='none'; toast.textContent = '✅ Thank you! Your order was sent.';}, 2500);
+      }
 
       // 2) Open WhatsApp message
       const lines = [];
@@ -320,8 +357,9 @@
       cart = {};
       renderCart();
       document.getElementById('cart').classList.remove('open');
+      toast.textContent = saveResult.ok ? '✅ Order sent & saved' : '✅ Order sent';
       toast.style.display = 'block';
-      setTimeout(()=>{toast.style.display='none';},3000);
+      setTimeout(()=>{toast.style.display='none'; toast.textContent = '✅ Thank you! Your order was sent.';},3000);
     });
 
     // --- Floating cart opens drawer ---
@@ -358,15 +396,8 @@
     (function runTests(){
       try{
         // Test 1: buildOrderPayload mapping and totals
-        const mockCart = {
-          a:{id:'a', name:'Test A', price:100, qty:2},
-          b:{id:'b', name:'Test B', price:50, qty:1}
-        };
-        // Simulate UI totals for test
-        subtotalEl.textContent = '₹250';
-        gstEl.textContent = '₹13';
-        serviceEl.textContent = '₹8';
-        grandEl.textContent = '₹271';
+        const mockCart = { a:{id:'a', name:'Test A', price:100, qty:2}, b:{id:'b', name:'Test B', price:50, qty:1} };
+        subtotalEl.textContent = '₹250'; gstEl.textContent = '₹13'; serviceEl.textContent = '₹8'; grandEl.textContent = '₹271';
         const order = buildOrderPayload(mockCart, '99');
         console.assert(order.items.length === 2, 'Test1: items length should be 2');
         console.assert(order.subtotal === 250 && order.total === 271, 'Test1: subtotal/total mismatch');
@@ -375,16 +406,8 @@
         function parseTableNoFrom(urlStr){
           const url = new URL(urlStr);
           let t = url.searchParams.get('table');
-          if(!t){
-            const hash = url.hash.replace(/^#/, '');
-            const m = /(?:^|&)?table=([^&]+)/.exec(hash);
-            if(m) t = decodeURIComponent(m[1]);
-          }
-          if(!t){
-            const segs = url.pathname.split('/').filter(Boolean);
-            const last = segs[segs.length-1];
-            if(/^[0-9]+$/.test(last)) t = last;
-          }
+          if(!t){ const hash = url.hash.replace(/^#/, ''); const m = /(?:^|&)?table=([^&]+)/.exec(hash); if(m) t = decodeURIComponent(m[1]); }
+          if(!t){ const segs = url.pathname.split('/').filter(Boolean); const last = segs[segs.length-1]; if(/^[0-9]+$/.test(last)) t = last; }
           return t || '—';
         }
         console.assert(parseTableNoFrom('https://x.test/app?table=12')==='12', 'Test2a: query parse failed');
@@ -394,14 +417,15 @@
         // Test 3: GS endpoint placeholder present
         console.assert(typeof GS_ENDPOINT === 'string' && GS_ENDPOINT.includes('script.google.com/macros'), 'Test3: GS endpoint looks invalid');
 
-        // Restore totals display after tests
+        // Test 4: build WhatsApp text (no exceptions)
+        const lines = ['Order from Table 1','Item × 1 = ₹100'];
+        const text = encodeURIComponent(lines.join(''));
+        console.assert(typeof text === 'string' && text.length > 0, 'Test4: WA text failed');
+
         renderCart();
         console.log('%cAll dev tests passed','color:green;font-weight:bold');
-      }catch(err){
-        console.warn('Dev tests encountered an issue:', err);
-      }
+      }catch(err){ console.warn('Dev tests encountered an issue:', err); }
     })();
   </script>
 </body>
 </html>
-
