@@ -85,8 +85,6 @@
     .floating-cart{position:fixed; bottom:80px; right:20px; background:var(--accent); color:#fff; border-radius:28px; padding:10px 16px; display:none; align-items:center; font-weight:600; font-size:14px; box-shadow:0 4px 12px rgba(0,0,0,.2); cursor:pointer; z-index:200;}
     .floating-cart .icon{margin-right:8px;}
     .floating-cart span{background:var(--danger); color:#fff; border-radius:50%; padding:2px 6px; font-size:12px; margin-left:6px;}
-
-    .toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--brand); color:#fff; padding:12px 20px; border-radius:8px; font-weight:600; display:none; z-index:300; box-shadow:0 4px 12px rgba(0,0,0,.2);}
   </style>
 </head>
 <body>
@@ -122,20 +120,14 @@
       <div class="footer"><button class="btn btn-ghost" id="clearCart">Clear</button><button class="btn btn-accent" id="placeOrder">Place Order</button></div>
     </aside>
     <div class="floating-cart" id="floatingCart"><div class="icon">🛒</div><div id="floatingTotal">₹0</div><span id="cartCount">0</span></div>
-    <div class="toast" id="toast">✅ Thank you! Your order was sent.</div>
   </main>
   <script>
-    const params = new URLSearchParams(location.search);
-    const TABLE_NO = params.get('table') || '—';
-
     const MENU = [
       {id:'1', name:'Paneer Tikka', price:260, img:'https://images.unsplash.com/photo-1645110408749-19821d17b629?q=80&w=400&auto=format&fit=crop', desc:'Cottage cheese cubes marinated in spices & grilled.'},
       {id:'2', name:'Chicken Wings', price:290, img:'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=400&auto=format&fit=crop', desc:'Crispy wings tossed in peri-peri sauce.'},
       {id:'3', name:'Veg Biryani', price:340, img:'https://images.unsplash.com/photo-1625944527758-0b0f1f9f1e17?q=80&w=400&auto=format&fit=crop', desc:'Fragrant basmati rice with vegetables & spices.'},
       {id:'4', name:'Cold Coffee', price:149, img:'https://images.unsplash.com/photo-1459755486867-b55449bb39ff?q=80&w=400&auto=format&fit=crop', desc:'Blended coffee with ice cream.'}
     ];
-
-    document.getElementById('tableNo').textContent = TABLE_NO;
 
     const menuEl = document.getElementById('menu');
     const cartItemsEl = document.getElementById('cartItems');
@@ -146,7 +138,6 @@
     const cartCountEl = document.getElementById('cartCount');
     const floatingCart = document.getElementById('floatingCart');
     const floatingTotalEl = document.getElementById('floatingTotal');
-    const toast = document.getElementById('toast');
 
     let cart = {};
 
@@ -222,44 +213,18 @@
 
     document.getElementById('clearCart').addEventListener('click',()=>{cart={};renderCart();});
     document.getElementById('placeOrder').addEventListener('click',()=>{
-      const lines = [];
-      lines.push(`Order from Table ${TABLE_NO}`);
+      let orderText = "Order from Table —%0A";
       Object.values(cart).forEach(it=>{
-        lines.push(`${it.name} × ${it.qty} = ₹${it.price*it.qty}`);
+        orderText += `${it.name} × ${it.qty} = ₹${it.price*it.qty}%0A`;
       });
-      lines.push(`Subtotal: ${subtotalEl.textContent}`);
-      lines.push(`GST: ${gstEl.textContent}`);
-      lines.push(`Service: ${serviceEl.textContent}`);
-      lines.push(`Total: ${grandEl.textContent}`);
-
-      const phone = "918970100123";
-      const text = encodeURIComponent(lines.join('
-'));
-      const url = `https://wa.me/${phone}?text=${text}`;
-      window.open(url,'_blank');
-      // Reset cart and close drawer after placing order
-      cart = {};
-      renderCart();
-      document.getElementById('cart').classList.remove('open');
-      // Show thank-you toast
-      toast.style.display = 'block';
-      setTimeout(()=>{toast.style.display='none';},3000);
-    });
       orderText += `Subtotal: ${subtotalEl.textContent}%0A`;
       orderText += `GST: ${gstEl.textContent}%0A`;
       orderText += `Service: ${serviceEl.textContent}%0A`;
       orderText += `Total: ${grandEl.textContent}`;
 
-      const phone = "911234567890";
+      const phone = "918970100123";
       const url = `https://wa.me/${phone}?text=${orderText}`;
       window.open(url,'_blank');
-      // Reset cart and close drawer after placing order
-      cart = {};
-      renderCart();
-      document.getElementById('cart').classList.remove('open');
-      // Show thank-you toast
-      toast.style.display = 'block';
-      setTimeout(()=>{toast.style.display='none';},3000);
     });
 
     floatingCart.addEventListener('click',()=>{
