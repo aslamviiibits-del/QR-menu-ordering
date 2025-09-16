@@ -43,13 +43,14 @@
     .hero h2{margin:0 0 4px 0; font-size:20px}
 
     .menu{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px}
-    .card{background:var(--panel); border:1px solid rgba(255,255,255,.07); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow)}
+    .card{background:var(--panel); border:1px solid rgba(255,255,255,.07); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); display:flex; flex-direction:column;}
     .card img{width:100%; height:160px; object-fit:cover}
-    .content{padding:12px}
+    .content{padding:12px; flex:1; display:flex; flex-direction:column; justify-content:space-between;}
     .title{display:flex; justify-content:space-between; align-items:center}
     .title h3{margin:0; font-size:16px}
     .price{font-weight:700; color:var(--brand)}
     .desc{margin:8px 0 12px 0; color:var(--muted); font-size:13px;}
+    .add-btn{margin-top:auto; padding:8px 12px; border-radius:8px; border:0; cursor:pointer; font-weight:600; background:var(--accent); color:#071018;}
 
     .cart{background:var(--panel); border:1px solid rgba(255,255,255,.08); border-radius:18px; box-shadow:var(--shadow)}
     .cart h3{margin:0; padding:12px 16px; border-bottom:1px solid rgba(255,255,255,.06)}
@@ -91,29 +92,83 @@
   </main>
   <script>
     const MENU = [
-      {name:'Paneer Tikka', price:260, img:'https://images.unsplash.com/photo-1645110408749-19821d17b629?q=80&w=400&auto=format&fit=crop', desc:'Cottage cheese cubes marinated in spices & grilled.'},
-      {name:'Chicken Wings', price:290, img:'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=400&auto=format&fit=crop', desc:'Crispy wings tossed in peri-peri sauce.'},
-      {name:'Veg Biryani', price:340, img:'https://images.unsplash.com/photo-1625944527758-0b0f1f9f1e17?q=80&w=400&auto=format&fit=crop', desc:'Fragrant basmati rice with vegetables & spices.'},
-      {name:'Cold Coffee', price:149, img:'https://images.unsplash.com/photo-1459755486867-b55449bb39ff?q=80&w=400&auto=format&fit=crop', desc:'Blended coffee with ice cream.'}
+      {id:'1', name:'Paneer Tikka', price:260, img:'https://images.unsplash.com/photo-1645110408749-19821d17b629?q=80&w=400&auto=format&fit=crop', desc:'Cottage cheese cubes marinated in spices & grilled.'},
+      {id:'2', name:'Chicken Wings', price:290, img:'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=400&auto=format&fit=crop', desc:'Crispy wings tossed in peri-peri sauce.'},
+      {id:'3', name:'Veg Biryani', price:340, img:'https://images.unsplash.com/photo-1625944527758-0b0f1f9f1e17?q=80&w=400&auto=format&fit=crop', desc:'Fragrant basmati rice with vegetables & spices.'},
+      {id:'4', name:'Cold Coffee', price:149, img:'https://images.unsplash.com/photo-1459755486867-b55449bb39ff?q=80&w=400&auto=format&fit=crop', desc:'Blended coffee with ice cream.'}
     ];
 
     const menuEl = document.getElementById('menu');
+    const cartItemsEl = document.getElementById('cartItems');
+    const grandEl = document.getElementById('grand');
+    let cart = {};
 
-    MENU.forEach(item => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <img src="${item.img}" alt="${item.name}">
-        <div class="content">
-          <div class="title">
-            <h3>${item.name}</h3>
-            <div class="price">₹${item.price}</div>
+    function renderMenu(){
+      menuEl.innerHTML = '';
+      MENU.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${item.img}" alt="${item.name}">
+          <div class="content">
+            <div>
+              <div class="title">
+                <h3>${item.name}</h3>
+                <div class="price">₹${item.price}</div>
+              </div>
+              <p class="desc">${item.desc}</p>
+            </div>
+            <button class="add-btn" onclick="addToCart('${item.id}')">Add to Cart</button>
           </div>
-          <p class="desc">${item.desc}</p>
-        </div>
-      `;
-      menuEl.appendChild(card);
+        `;
+        menuEl.appendChild(card);
+      });
+    }
+
+    function renderCart(){
+      cartItemsEl.innerHTML = '';
+      let total = 0;
+      Object.values(cart).forEach(it => {
+        total += it.price * it.qty;
+        const row = document.createElement('div');
+        row.className = 'item';
+        row.innerHTML = `
+          <img src="${it.img}" alt="${it.name}">
+          <div>
+            <div>${it.name}</div>
+            <div>₹${it.price} × ${it.qty}</div>
+          </div>
+          <div>
+            <button onclick="changeQty('${it.id}',-1)">−</button>
+            <button onclick="changeQty('${it.id}',1)">+</button>
+          </div>
+        `;
+        cartItemsEl.appendChild(row);
+      });
+      grandEl.textContent = '₹' + total;
+    }
+
+    function addToCart(id){
+      const item = MENU.find(m=>m.id===id);
+      if(!cart[id]) cart[id] = {...item, qty:0};
+      cart[id].qty++;
+      renderCart();
+    }
+
+    function changeQty(id,delta){
+      if(!cart[id]) return;
+      cart[id].qty += delta;
+      if(cart[id].qty<=0) delete cart[id];
+      renderCart();
+    }
+
+    document.getElementById('clearCart').addEventListener('click',()=>{cart={};renderCart();});
+    document.getElementById('placeOrder').addEventListener('click',()=>{
+      alert('Order placed! Total: '+grandEl.textContent);
+      cart={};renderCart();
     });
+
+    renderMenu();
   </script>
 </body>
 </html>
