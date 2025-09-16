@@ -89,5 +89,31 @@
       <div class="footer"><button class="btn btn-ghost" id="clearCart">Clear</button><button class="btn btn-accent" id="placeOrder">Place Order</button></div>
     </aside>
   </main>
+  <script>
+    const MENU = [
+      {name:'Paneer Tikka', price:260, img:'https://images.unsplash.com/photo-1645110408749-19821d17b629?q=80&w=400&auto=format&fit=crop', desc:'Cottage cheese cubes marinated in spices & grilled.'},
+      {name:'Chicken Wings', price:290, img:'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=400&auto=format&fit=crop', desc:'Crispy wings tossed in peri-peri sauce.'},
+      {name:'Veg Biryani', price:340, img:'https://images.unsplash.com/photo-1625944527758-0b0f1f9f1e17?q=80&w=400&auto=format&fit=crop', desc:'Fragrant basmati rice with vegetables & spices.'},
+      {name:'Cold Coffee', price:149, img:'https://images.unsplash.com/photo-1459755486867-b55449bb39ff?q=80&w=400&auto=format&fit=crop', desc:'Blended coffee with ice cream.'}
+    ];
+
+    const menuEl = document.getElementById('menu');
+
+    MENU.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <img src="${item.img}" alt="${item.name}">
+        <div class="content">
+          <div class="title">
+            <h3>${item.name}</h3>
+            <div class="price">₹${item.price}</div>
+          </div>
+          <p class="desc">${item.desc}</p>
+        </div>
+      `;
+      menuEl.appendChild(card);
+    });
+  </script>
 </body>
 </html>
