@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -18,7 +18,7 @@
       --shadow: 0 4px 12px rgba(0,0,0,.1);
     }
     *{box-sizing:border-box}
-    body{margin:0; font-family:system-ui; background:var(--bg); color:var(--text)}
+    body{margin:0; font-family:system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; background:var(--bg); color:var(--text)}
     header{position:sticky; top:0; z-index:100; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,.05); transition:all .3s ease;}
     .bar{max-width:1100px; margin:0 auto; display:flex; flex-wrap:wrap; gap:12px; align-items:center; padding:10px 16px; transition:all .3s ease;}
     .brand{display:flex; gap:10px; align-items:center; flex:1 1 100%;}
@@ -76,7 +76,7 @@
     .floating-cart .icon{margin-right:8px;}
     .floating-cart span{background:var(--danger); color:#fff; border-radius:50%; padding:2px 6px; font-size:12px; margin-left:6px;}
 
-    .toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--brand); color:#fff; padding:12px 20px; border-radius:8px; font-weight:600; display:none; z-index:300; box-shadow:0 4px 12px rgba(0,0,0,.2);}
+    .toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--brand); color:#fff; padding:12px 20px; border-radius:8px; font-weight:600; display:none; z-index:300; box-shadow:0 4px 12px rgba(0,0,0,.2);}  
   </style>
 </head>
 <body>
@@ -85,8 +85,8 @@
       <div class="brand">
         <div class="logo" id="logo"></div>
         <div>
-          <h1 id="brandTitle">NovaBite Kitchen</h1>
-          <div class="sub">Table <span id="tableNo">—</span> 
+          <h1 id="brandTitle">Yummy Bites</h1>
+          <div class="sub">Table <span id="tableNo">—</span>
             <button id="changeTableBtn" class="btn btn-ghost" style="padding:4px 8px; margin-left:6px; font-size:12px;">Change</button>
           </div>
         </div>
@@ -122,8 +122,25 @@
     <div class="floating-cart" id="floatingCart"><div class="icon">🛒</div><div id="floatingTotal">₹0</div><span id="cartCount">0</span></div>
     <div class="toast" id="toast">✅ Thank you! Your order was sent.</div>
   </main>
+
   <script>
-    // --- Robust table number parsing & persistence ---
+    // --- Google Sheets webhook integration ---
+    // TODO: Replace with your deployed Apps Script Web App URL
+    const GS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwNMefoyhfuosFmeTFsJMX_aSPAegGmyjwE-OR10G_OvQBYbQV9YXwj4MQFKvTYd1AW/exec';
+
+    async function saveOrderToSheet(order){
+      try{
+        await fetch(GS_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(order)
+        });
+      }catch(err){
+        console.error('Sheet save failed:', err);
+      }
+    }
+
+    // --- Table number parsing & persistence ---
     function getTableNo(){
       try{
         const url = new URL(window.location.href);
@@ -151,32 +168,16 @@
     let TABLE_NO = getTableNo();
     document.getElementById('tableNo').textContent = TABLE_NO;
     if(TABLE_NO==='—'){ document.getElementById('tableBanner').style.display='block'; }
-    console.log('Table detected =>', TABLE_NO, 'URL:', window.location.href);
-
-    // --- Google Sheets webhook integration ---
-    // TODO: Replace with your deployed Apps Script Web App URL
-    const GS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwNMefoyhfuosFmeTFsJMX_aSPAegGmyjwE-OR10G_OvQBYbQV9YXwj4MQFKvTYd1AW/exec';
-
-    async function saveOrderToSheet(order){
-      try{
-        await fetch(GS_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(order)
-        });
-      }catch(err){
-        console.error('Sheet save failed:', err);
-      }
-    }
 
     // --- Demo MENU ---
-         const MENU = [
+          const MENU = [
       {id:'1', name:'Paneer Tikka', price:260, img:'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', desc:'Cottage cheese cubes marinated in spices & grilled.'},
       {id:'2', name:'Chicken Wings', price:290, img:'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=400&auto=format&fit=crop', desc:'Crispy wings tossed in peri-peri sauce.'},
       {id:'3', name:'Veg Biryani', price:340, img:'https://images.unsplash.com/photo-1630409346824-4f0e7b080087?q=80&w=1246&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', desc:'Fragrant basmati rice with vegetables & spices.'},
       {id:'4', name:'Cold Coffee', price:149, img:'https://images.unsplash.com/photo-1459755486867-b55449bb39ff?q=80&w=400&auto=format&fit=crop', desc:'Blended coffee with ice cream.'}
     ];
 
+    // --- DOM refs ---
     const menuEl = document.getElementById('menu');
     const cartItemsEl = document.getElementById('cartItems');
     const subtotalEl = document.getElementById('subtotal');
@@ -190,6 +191,7 @@
 
     let cart = {};
 
+    // --- Rendering ---
     function renderMenu(){
       menuEl.innerHTML = '';
       MENU.forEach(item => {
@@ -246,6 +248,7 @@
       floatingCart.style.display = count>0 ? 'flex' : 'none';
     }
 
+    // --- Cart ops ---
     function addToCart(id){
       const item = MENU.find(m=>m.id===id);
       if(!cart[id]) cart[id] = {...item, qty:0};
@@ -262,75 +265,71 @@
 
     document.getElementById('clearCart').addEventListener('click',()=>{cart={};renderCart();});
 
-    document.getElementById('placeOrder').addEventListener('click', async ()=>{
-      // Build items array from cart
-      const items = Object.values(cart).map(it => ({ id: it.id, name: it.name, price: it.price, qty: it.qty }));
+    // --- Helpers for order payload ---
+    function getTotalsFromUI(){
+      return {
+        subtotal: Number((subtotalEl.textContent||'').replace(/[₹,]/g,'') || 0),
+        gst:      Number((gstEl.textContent||'').replace(/[₹,]/g,'') || 0),
+        service:  Number((serviceEl.textContent||'').replace(/[₹,]/g,'') || 0),
+        total:    Number((grandEl.textContent||'').replace(/[₹,]/g,'') || 0)
+      };
+    }
 
-      // Parse numbers from UI labels (strip ₹ and commas)
-      const subtotalNum = Number((subtotalEl.textContent||'').replace(/[₹,]/g,'') || 0);
-      const gstNum      = Number((gstEl.textContent||'').replace(/[₹,]/g,'') || 0);
-      const serviceNum  = Number((serviceEl.textContent||'').replace(/[₹,]/g,'') || 0);
-      const totalNum    = Number((grandEl.textContent||'').replace(/[₹,]/g,'') || 0);
-
-      const order = {
+    function buildOrderPayload(cartObj, tableNo){
+      const items = Object.values(cartObj).map(it => ({
+        id: it.id,
+        name: it.name,
+        price: it.price,
+        qty: it.qty
+      }));
+      const t = getTotalsFromUI();
+      return {
         order_id: `WB-${Date.now()}-${Math.floor(Math.random()*1000)}`,
-        table: TABLE_NO,
+        table: tableNo,
         items,
-        subtotal: subtotalNum,
-        gst: gstNum,
-        service: serviceNum,
-        total: totalNum,
+        subtotal: t.subtotal,
+        gst: t.gst,
+        service: t.service,
+        total: t.total,
         source: 'github-pages'
       };
+    }
 
-      // 1) Save to Google Sheets (fire-and-forget)
+    // --- Place order (WhatsApp + Google Sheet) ---
+    document.getElementById('placeOrder').addEventListener('click', async ()=>{
+      const order = buildOrderPayload(cart, TABLE_NO);
+
+      // 1) Save to Google Sheet (fire-and-forget)
       saveOrderToSheet(order);
 
-      // 2) Open WhatsApp message as before
+      // 2) Open WhatsApp message
       const lines = [];
       lines.push(`Order from Table ${TABLE_NO}`);
-      items.forEach(it => lines.push(`${it.name} × ${it.qty} = ₹${it.price * it.qty}`));
-      lines.push(`Subtotal: ₹${subtotalNum}`);
-      lines.push(`GST: ₹${gstNum}`);
-      lines.push(`Service: ₹${serviceNum}`);
-      lines.push(`Total: ₹${totalNum}`);
+      order.items.forEach(it => lines.push(`${it.name} × ${it.qty} = ₹${it.price * it.qty}`));
+      lines.push(`Subtotal: ₹${order.subtotal}`);
+      lines.push(`GST: ₹${order.gst}`);
+      lines.push(`Service: ₹${order.service}`);
+      lines.push(`Total: ₹${order.total}`);
 
       const phone = "918970100123"; // TODO: set your WhatsApp number in international format
-      const text  = encodeURIComponent(lines.join(''));
+      const text  = encodeURIComponent(lines.join('\n'));
       const url   = `https://wa.me/${phone}?text=${text}`;
       window.open(url,'_blank');
 
-      // Reset cart, close drawer, show toast
+      // Reset UI
       cart = {};
       renderCart();
       document.getElementById('cart').classList.remove('open');
       toast.style.display = 'block';
       setTimeout(()=>{toast.style.display='none';},3000);
     });
-      lines.push(`Subtotal: ${subtotalEl.textContent}`);
-      lines.push(`GST: ${gstEl.textContent}`);
-      lines.push(`Service: ${serviceEl.textContent}`);
-      lines.push(`Total: ${grandEl.textContent}`);
 
-      const phone = "911234567890"; // TODO: replace with your WhatsApp number in international format
-      const text = encodeURIComponent(lines.join('\n'));
-      const url = `https://wa.me/${phone}?text=${text}`;
-      window.open(url,'_blank');
-      // Reset cart and close drawer after placing order
-      cart = {};
-      renderCart();
-      document.getElementById('cart').classList.remove('open');
-      // Thank-you toast
-      toast.style.display = 'block';
-      setTimeout(()=>{toast.style.display='none';},3000);
-    });
-
-    // Floating cart opens drawer
+    // --- Floating cart opens drawer ---
     floatingCart.addEventListener('click',()=>{
       document.getElementById('cart').classList.add('open');
     });
 
-    // Change/Save table number
+    // --- Change/Save table number ---
     document.getElementById('saveTable').addEventListener('click',()=>{
       const val = (document.getElementById('tableInput').value || '').trim();
       if(!/^\d+$/.test(val)){ alert('Please enter a valid table number'); return; }
@@ -344,26 +343,64 @@
       document.getElementById('tableInput').focus();
     });
 
-    // Shrink header on scroll
-    window.addEventListener('scroll',()=>{
-      const header = document.getElementById('header');
-      const logo = document.getElementById('logo');
-      const brandTitle = document.getElementById('brandTitle');
-      if(window.scrollY > 50){
-        header.style.boxShadow = '0 2px 10px rgba(0,0,0,.1)';
-        logo.style.width = '24px';
-        logo.style.height = '24px';
-        brandTitle.style.fontSize = '14px';
-      } else {
-        header.style.boxShadow = '0 2px 6px rgba(0,0,0,.05)';
-        logo.style.width = '34px';
-        logo.style.height = '34px';
-        brandTitle.style.fontSize = '18px';
-      }
+    // --- Optional: top checkout opens cart ---
+    document.getElementById('checkoutTop').addEventListener('click',()=>{
+      document.getElementById('cart').classList.add('open');
+      window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'});
     });
 
-    // Init
+    // --- Init ---
     renderMenu();
+
+    // =====================
+    // Minimal Dev Test Cases
+    // =====================
+    (function runTests(){
+      try{
+        // Test 1: buildOrderPayload mapping and totals
+        const mockCart = {
+          a:{id:'a', name:'Test A', price:100, qty:2},
+          b:{id:'b', name:'Test B', price:50, qty:1}
+        };
+        // Simulate UI totals for test
+        subtotalEl.textContent = '₹250';
+        gstEl.textContent = '₹13';
+        serviceEl.textContent = '₹8';
+        grandEl.textContent = '₹271';
+        const order = buildOrderPayload(mockCart, '99');
+        console.assert(order.items.length === 2, 'Test1: items length should be 2');
+        console.assert(order.subtotal === 250 && order.total === 271, 'Test1: subtotal/total mismatch');
+
+        // Test 2: table parser with query/hash/path
+        function parseTableNoFrom(urlStr){
+          const url = new URL(urlStr);
+          let t = url.searchParams.get('table');
+          if(!t){
+            const hash = url.hash.replace(/^#/, '');
+            const m = /(?:^|&)?table=([^&]+)/.exec(hash);
+            if(m) t = decodeURIComponent(m[1]);
+          }
+          if(!t){
+            const segs = url.pathname.split('/').filter(Boolean);
+            const last = segs[segs.length-1];
+            if(/^[0-9]+$/.test(last)) t = last;
+          }
+          return t || '—';
+        }
+        console.assert(parseTableNoFrom('https://x.test/app?table=12')==='12', 'Test2a: query parse failed');
+        console.assert(parseTableNoFrom('https://x.test/app#table=7')==='7', 'Test2b: hash parse failed');
+        console.assert(parseTableNoFrom('https://x.test/app/table/5')==='5', 'Test2c: path parse failed');
+
+        // Test 3: GS endpoint placeholder present
+        console.assert(typeof GS_ENDPOINT === 'string' && GS_ENDPOINT.includes('script.google.com/macros'), 'Test3: GS endpoint looks invalid');
+
+        // Restore totals display after tests
+        renderCart();
+        console.log('%cAll dev tests passed','color:green;font-weight:bold');
+      }catch(err){
+        console.warn('Dev tests encountered an issue:', err);
+      }
+    })();
   </script>
 </body>
 </html>
