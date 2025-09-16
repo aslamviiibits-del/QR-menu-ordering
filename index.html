@@ -19,19 +19,22 @@
     }
     *{box-sizing:border-box}
     body{margin:0; font-family:system-ui; background:var(--bg); color:var(--text)}
-    header{position:sticky; top:0; z-index:100; backdrop-filter:saturate(160%) blur(10px); background:#fff; box-shadow:0 2px 6px rgba(0,0,0,.05);}
-    .bar{max-width:1100px; margin:0 auto; display:flex; flex-wrap:wrap; gap:12px; align-items:center; padding:14px 16px;}
+    header{position:sticky; top:0; z-index:100; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,.05); transition:all .3s ease;}
+    .bar{max-width:1100px; margin:0 auto; display:flex; flex-wrap:wrap; gap:12px; align-items:center; padding:10px 16px; transition:all .3s ease;}
     .brand{display:flex; gap:10px; align-items:center; flex:1 1 100%;}
-    .logo{width:38px;height:38px;border-radius:12px; background:linear-gradient(135deg,var(--accent),var(--brand));}
-    h1{font-size:18px; margin:0;}
+    .logo{width:34px;height:34px;border-radius:12px; background:linear-gradient(135deg,var(--accent),var(--brand)); transition:all .3s ease;}
+    h1{font-size:18px; margin:0; transition:all .3s ease;}
     .sub{font-size:12px;color:var(--muted)}
     .tools{display:flex; align-items:center; gap:10px; margin-left:auto;}
-    input[type="search"], select{background:#f1f1f1; border:1px solid #ddd; color:var(--text); padding:10px 12px; border-radius:12px;}
-    .btn{cursor:pointer; border:0; padding:10px 14px; border-radius:12px; font-weight:600;}
+    input[type="search"], select{background:#f1f1f1; border:1px solid #ddd; color:var(--text); padding:8px 10px; border-radius:12px;}
+    .btn{cursor:pointer; border:0; padding:8px 12px; border-radius:12px; font-weight:600;}
     .btn-accent{background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#fff;}
     .btn-ghost{background:transparent; color:var(--text); border:1px solid #ccc}
 
     @media (max-width: 600px){
+      .brand h1{font-size:16px;}
+      .brand .sub{font-size:11px;}
+      .logo{width:28px; height:28px;}
       .tools{
         flex-wrap: wrap;
         gap: 6px;
@@ -42,7 +45,7 @@
       .tools input[type="search"],
       .tools button{
         flex: 1 1 45%;
-        min-width: 120px;
+        min-width: 110px;
       }
     }
 
@@ -85,12 +88,12 @@
   </style>
 </head>
 <body>
-  <header>
+  <header id="header">
     <div class="bar">
       <div class="brand">
-        <div class="logo"></div>
+        <div class="logo" id="logo"></div>
         <div>
-          <h1>NovaBite Kitchen</h1>
+          <h1 id="brandTitle">NovaBite Kitchen</h1>
           <div class="sub">Table <span id="tableNo">—</span></div>
         </div>
       </div>
@@ -226,6 +229,24 @@
 
     floatingCart.addEventListener('click',()=>{
       document.getElementById('cart').classList.add('open');
+    });
+
+    // Shrink header on scroll
+    window.addEventListener('scroll',()=>{
+      const header = document.getElementById('header');
+      const logo = document.getElementById('logo');
+      const brandTitle = document.getElementById('brandTitle');
+      if(window.scrollY > 50){
+        header.style.boxShadow = '0 2px 10px rgba(0,0,0,.1)';
+        logo.style.width = '24px';
+        logo.style.height = '24px';
+        brandTitle.style.fontSize = '14px';
+      } else {
+        header.style.boxShadow = '0 2px 6px rgba(0,0,0,.05)';
+        logo.style.width = '34px';
+        logo.style.height = '34px';
+        brandTitle.style.fontSize = '18px';
+      }
     });
 
     renderMenu();
