@@ -154,10 +154,10 @@
     console.log('Table detected =>', TABLE_NO, 'URL:', window.location.href);
 
     // --- Demo MENU ---
-    const MENU = [
-      {id:'1', name:'Paneer Tikka', price:260, img:'https://images.unsplash.com/photo-1645110408749-19821d17b629?q=80&w=400&auto=format&fit=crop', desc:'Cottage cheese cubes marinated in spices & grilled.'},
+      const MENU = [
+      {id:'1', name:'Paneer Tikka', price:260, img:'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', desc:'Cottage cheese cubes marinated in spices & grilled.'},
       {id:'2', name:'Chicken Wings', price:290, img:'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=400&auto=format&fit=crop', desc:'Crispy wings tossed in peri-peri sauce.'},
-      {id:'3', name:'Veg Biryani', price:340, img:'https://images.unsplash.com/photo-1625944527758-0b0f1f9f1e17?q=80&w=400&auto=format&fit=crop', desc:'Fragrant basmati rice with vegetables & spices.'},
+      {id:'3', name:'Veg Biryani', price:340, img:'https://images.unsplash.com/photo-1630409346824-4f0e7b080087?q=80&w=1246&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', desc:'Fragrant basmati rice with vegetables & spices.'},
       {id:'4', name:'Cold Coffee', price:149, img:'https://images.unsplash.com/photo-1459755486867-b55449bb39ff?q=80&w=400&auto=format&fit=crop', desc:'Blended coffee with ice cream.'}
     ];
 
@@ -257,7 +257,7 @@
       lines.push(`Service: ${serviceEl.textContent}`);
       lines.push(`Total: ${grandEl.textContent}`);
 
-      const phone = "911234567890"; // TODO: replace with your WhatsApp number in international format
+      const phone = "918970100123"; // TODO: replace with your WhatsApp number in international format
       const text = encodeURIComponent(lines.join('\n'));
       const url = `https://wa.me/${phone}?text=${text}`;
       window.open(url,'_blank');
@@ -312,3 +312,4 @@
   </script>
 </body>
 </html>
+
