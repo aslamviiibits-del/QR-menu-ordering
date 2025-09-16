@@ -6,30 +6,30 @@
   <title>QR Menu • Table Ordering</title>
   <style>
     :root{
-      --bg:#0b0c10;
-      --panel:#111319;
-      --muted:#8b93a7;
-      --text:#e8ecf1;
+      --bg:#f9f9f9;
+      --panel:#ffffff;
+      --muted:#555;
+      --text:#222;
       --accent:#4cc9f0;
       --accent-2:#80ed99;
       --danger:#ef476f;
-      --brand:#ffd166;
+      --brand:#ff9900;
       --radius:16px;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --shadow: 0 4px 12px rgba(0,0,0,.1);
     }
     *{box-sizing:border-box}
     body{margin:0; font-family:system-ui; background:var(--bg); color:var(--text)}
-    header{position:sticky; top:0; z-index:100; backdrop-filter:saturate(160%) blur(10px); background:rgba(17,19,25,.8);}
+    header{position:sticky; top:0; z-index:100; backdrop-filter:saturate(160%) blur(10px); background:#fff; box-shadow:0 2px 6px rgba(0,0,0,.05);}
     .bar{max-width:1100px; margin:0 auto; display:flex; gap:12px; align-items:center; padding:14px 16px;}
     .brand{display:flex; gap:10px; align-items:center;}
     .logo{width:38px;height:38px;border-radius:12px; background:linear-gradient(135deg,var(--accent),var(--brand));}
     h1{font-size:18px; margin:0;}
     .sub{font-size:12px;color:var(--muted)}
     .tools{display:flex; align-items:center; gap:10px; margin-left:auto;}
-    input[type="search"], select{background:#0f1220; border:1px solid rgba(255,255,255,.08); color:var(--text); padding:10px 12px; border-radius:12px;}
+    input[type="search"], select{background:#f1f1f1; border:1px solid #ddd; color:var(--text); padding:10px 12px; border-radius:12px;}
     .btn{cursor:pointer; border:0; padding:10px 14px; border-radius:12px; font-weight:600;}
     .btn-accent{background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#071018;}
-    .btn-ghost{background:transparent; color:var(--text); border:1px solid rgba(255,255,255,.12)}
+    .btn-ghost{background:transparent; color:var(--text); border:1px solid #ccc}
 
     main{max-width:1100px; margin:24px auto; padding:0 16px; display:grid; grid-template-columns:1fr 320px; gap:18px;}
     @media (max-width: 1024px){ 
@@ -39,11 +39,11 @@
       .cart h3{cursor:pointer; text-align:center;}
     }
 
-    .hero{grid-column:1/-1; background:rgba(76,201,240,.1); border:1px solid rgba(255,255,255,.07); padding:18px; border-radius:var(--radius);}
+    .hero{grid-column:1/-1; background:#fffbe6; border:1px solid #f0e6cc; padding:18px; border-radius:var(--radius); box-shadow:var(--shadow)}
     .hero h2{margin:0 0 4px 0; font-size:20px}
 
     .menu{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px}
-    .card{background:var(--panel); border:1px solid rgba(255,255,255,.07); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); display:flex; flex-direction:column;}
+    .card{background:var(--panel); border:1px solid #eee; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); display:flex; flex-direction:column;}
     .card img{width:100%; height:160px; object-fit:cover}
     .content{padding:12px; flex:1; display:flex; flex-direction:column; justify-content:space-between;}
     .title{display:flex; justify-content:space-between; align-items:center}
@@ -52,12 +52,12 @@
     .desc{margin:8px 0 12px 0; color:var(--muted); font-size:13px;}
     .add-btn{margin-top:auto; padding:8px 12px; border-radius:8px; border:0; cursor:pointer; font-weight:600; background:var(--accent); color:#071018;}
 
-    .cart{background:var(--panel); border:1px solid rgba(255,255,255,.08); border-radius:18px; box-shadow:var(--shadow)}
-    .cart h3{margin:0; padding:12px 16px; border-bottom:1px solid rgba(255,255,255,.06)}
+    .cart{background:var(--panel); border:1px solid #eee; border-radius:18px; box-shadow:var(--shadow)}
+    .cart h3{margin:0; padding:12px 16px; border-bottom:1px solid #eee}
     .cart .body{padding:12px 16px; max-height:200px; overflow:auto}
-    .item{display:grid; grid-template-columns:48px 1fr auto; gap:10px; align-items:center; padding:8px 0; border-bottom:1px dashed rgba(255,255,255,.08)}
+    .item{display:grid; grid-template-columns:48px 1fr auto; gap:10px; align-items:center; padding:8px 0; border-bottom:1px dashed #ddd}
     .item img{width:48px;height:48px;border-radius:10px;object-fit:cover}
-    .totals{padding:12px 16px; border-top:1px solid rgba(255,255,255,.08)}
+    .totals{padding:12px 16px; border-top:1px solid #eee}
     .totals .line{display:flex; justify-content:space-between; margin:4px 0;}
     .grand{font-weight:700; font-size:16px;}
     .footer{display:flex; gap:10px; padding:12px 16px 16px 16px}
@@ -190,8 +190,7 @@
       orderText += `Service: ${serviceEl.textContent}%0A`;
       orderText += `Total: ${grandEl.textContent}`;
 
-      // Replace with your WhatsApp number in international format, e.g. 911234567890 for India
-      const phone = "918970100123";
+      const phone = "911234567890";
       const url = `https://wa.me/${phone}?text=${orderText}`;
       window.open(url,'_blank');
     });
