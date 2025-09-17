@@ -17,16 +17,63 @@
       --radius:16px;
       --shadow: 0 4px 12px rgba(0,0,0,.1);
     }
+
     *{box-sizing:border-box}
-    body{margin:0; font-family:system-ui; background:var(--bg); color:var(--text)}
-    header{position:sticky; top:0; z-index:100; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,.05); transition:all .3s ease;}
-    .bar{max-width:1100px; margin:0 auto; display:flex; flex-wrap:wrap; gap:12px; align-items:center; padding:10px 16px; transition:all .3s ease;}
+    html, body {
+      margin:0;
+      padding:0;
+      width:100%;
+      max-width:100%;
+      overflow-x:hidden; /* 🚫 stop sideways scroll */
+      font-family:system-ui;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    header {
+      position:sticky;
+      top:0;
+      z-index:100;
+      background:#fff;
+      box-shadow:0 2px 6px rgba(0,0,0,.05);
+      transition:all .3s ease;
+    }
+
+    .bar {
+      max-width:1100px;
+      margin:0 auto;
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      align-items:center;
+      padding:10px 16px;
+      transition:all .3s ease;
+    }
+
     .brand{display:flex; gap:10px; align-items:center; flex:1 1 100%;}
     .logo{width:34px;height:34px;border-radius:12px; background:linear-gradient(135deg,var(--accent),var(--brand)); transition:all .3s ease;}
     h1{font-size:18px; margin:0; transition:all .3s ease;}
     .sub{font-size:12px;color:var(--muted)}
-    .tools{display:flex; align-items:center; gap:10px; margin-left:auto;}
-    input[type="search"], select{background:#f1f1f1; border:1px solid #ddd; color:var(--text); padding:8px 10px; border-radius:12px;}
+
+    .tools{
+      display:flex; 
+      align-items:center; 
+      gap:10px; 
+      margin-left:auto; 
+      flex-wrap:wrap; 
+      width:100%;
+    }
+
+    input[type="search"], select {
+      background:#f1f1f1; 
+      border:1px solid #ddd; 
+      color:var(--text); 
+      padding:8px 10px; 
+      border-radius:12px;
+      flex:1 1 45%;
+      min-width:110px;
+    }
+
     .btn{cursor:pointer; border:0; padding:8px 12px; border-radius:12px; font-weight:600;}
     .btn-accent{background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#fff;}
     .btn-ghost{background:transparent; color:var(--text); border:1px solid #ccc}
@@ -35,11 +82,17 @@
       .brand h1{font-size:16px;}
       .brand .sub{font-size:11px;}
       .logo{width:28px; height:28px;}
-      .tools{flex-wrap: wrap; gap: 6px; width: 100%; justify-content: flex-start;}
-      .tools select, .tools input[type="search"], .tools button{flex: 1 1 45%; min-width: 110px;}
     }
 
-    main{max-width:1100px; margin:24px auto; padding:0 16px; display:grid; grid-template-columns:1fr 320px; gap:18px;}
+    main {
+      max-width:1100px; 
+      margin:24px auto; 
+      padding:0 16px; 
+      display:grid; 
+      grid-template-columns:1fr 320px; 
+      gap:18px;
+    }
+
     @media (max-width: 1024px){
       main{grid-template-columns:1fr}
       .cart{position:fixed; left:0; right:0; bottom:0; max-height:60vh; transform:translateY(calc(100% - 48px)); transition:transform .3s ease; border-radius:18px 18px 0 0;}
@@ -51,9 +104,19 @@
     .hero{grid-column:1/-1; background:#fff3e0; border:1px solid #ffe0b2; padding:18px; border-radius:var(--radius); box-shadow:var(--shadow)}
     .hero h2{margin:0 0 4px 0; font-size:20px}
 
-    .menu{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px}
+    .menu{
+      display:grid; 
+      grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); 
+      gap:14px; 
+      max-width:100%;
+    }
+
+    @media (max-width: 480px){
+      .menu{grid-template-columns:1fr;} /* 📱 single column on phones */
+    }
+
     .card{background:var(--panel); border:1px solid #eee; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); display:flex; flex-direction:column;}
-    .card img{width:100%; height:160px; object-fit:cover}
+    .card img{width:100%; height:160px; object-fit:cover; display:block;}
     .content{padding:12px; flex:1; display:flex; flex-direction:column; justify-content:space-between;}
     .title{display:flex; justify-content:space-between; align-items:center}
     .title h3{margin:0; font-size:16px}
@@ -72,245 +135,199 @@
     .footer{display:flex; gap:10px; padding:12px 16px 16px 16px}
     .footer .btn{flex:1}
 
-    .floating-cart{position:fixed; bottom:80px; right:70px; background:var(--accent); color:#fff; border-radius:28px; padding:10px 16px; display:none; align-items:center; font-weight:600; font-size:14px; box-shadow:0 4px 12px rgba(0,0,0,.2); cursor:pointer; z-index:200;}
+    .floating-cart{
+      position:fixed; 
+      bottom:80px; 
+      right:70px; 
+      background:var(--accent); 
+      color:#fff; 
+      border-radius:28px; 
+      padding:10px 16px; 
+      display:none; 
+      align-items:center; 
+      font-weight:600; 
+      font-size:14px; 
+      box-shadow:0 4px 12px rgba(0,0,0,.2); 
+      cursor:pointer; 
+      z-index:200;
+    }
     .floating-cart .icon{margin-right:8px;}
     .floating-cart span{background:var(--danger); color:#fff; border-radius:50%; padding:2px 6px; font-size:12px; margin-left:6px;}
 
-    .toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--brand); color:#fff; padding:12px 20px; border-radius:8px; font-weight:600; display:none; z-index:300; box-shadow:0 4px 12px rgba(0,0,0,.2);}
+    .toast{
+      position:fixed; 
+      bottom:20px; 
+      left:50%; 
+      transform:translateX(-50%); 
+      background:var(--brand); 
+      color:#fff; 
+      padding:12px 20px; 
+      border-radius:8px; 
+      font-weight:600; 
+      display:none; 
+      z-index:300; 
+      box-shadow:0 4px 12px rgba(0,0,0,.2);
+    }
+
+    /* 📱 Mobile tweaks */
+    @media (max-width: 480px) {
+      .floating-cart {
+        bottom: 70px;
+        right: 16px;
+        font-size: 13px;
+        padding: 8px 12px;
+      }
+      .cart {
+        left: 0;
+        right: 0;
+        width: 100%;
+        border-radius: 12px 12px 0 0;
+        margin: 0;
+      }
+      .cart .body {
+        max-height: 50vh;
+      }
+    }
   </style>
 </head>
 <body>
-  <header id="header">
+
+  <header>
     <div class="bar">
       <div class="brand">
-        <div class="logo" id="logo"></div>
+        <div class="logo"></div>
         <div>
-         
-          <h1 id="brandTitle">Yummy Bites</h1>
-          <div class="sub">Table <span id="tableNo">—</span> 
-            <button id="changeTableBtn" class="btn btn-ghost" style="padding:4px 8px; margin-left:6px; font-size:12px;">Change</button>
-          </div>
+          <h1>Spicy Bites</h1>
+          <div class="sub">Table #5</div>
         </div>
       </div>
       <div class="tools">
-        <select id="category"><option value="all">All</option></select>
-        <input id="search" type="search" placeholder="Search" />
-        <button class="btn btn-ghost" id="reset">Reset</button>
-        <button class="btn btn-accent" id="checkoutTop">Checkout</button>
+        <input type="search" placeholder="Search menu…">
+        <select>
+          <option>All Categories</option>
+          <option>Starters</option>
+          <option>Main Course</option>
+          <option>Desserts</option>
+        </select>
+        <button class="btn btn-accent">Offers</button>
+        <button class="btn btn-ghost">Help</button>
       </div>
     </div>
   </header>
+
   <main>
-    <div id="tableBanner" style="display:none; background:#fff3e0; border:1px solid #ffe0b2; padding:10px 12px; border-radius:10px; margin:12px 16px;">
-      <strong>Enter table number:</strong>
-      <input id="tableInput" type="number" min="1" step="1" placeholder="e.g. 12" style="margin:0 8px; padding:6px 10px; border:1px solid #ddd; border-radius:8px; width:100px;">
-      <button id="saveTable" class="btn btn-accent" style="padding:6px 10px;">Save</button>
+    <div>
+      <div class="hero">
+        <h2>Welcome to Spicy Bites!</h2>
+        <p>Order fresh & hot meals directly to your table. No waiters needed 🍽️</p>
+      </div>
+
+      <div class="menu">
+        <div class="card">
+          <img src="https://picsum.photos/300/200?food=1" alt="Dish">
+          <div class="content">
+            <div class="title">
+              <h3>Paneer Tikka</h3>
+              <div class="price">₹220</div>
+            </div>
+            <div class="desc">Smoky grilled paneer cubes marinated with spices.</div>
+            <button class="add-btn">+ Add</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <img src="https://picsum.photos/300/200?food=2" alt="Dish">
+          <div class="content">
+            <div class="title">
+              <h3>Veg Biryani</h3>
+              <div class="price">₹180</div>
+            </div>
+            <div class="desc">Aromatic basmati rice with fresh vegetables and spices.</div>
+            <button class="add-btn">+ Add</button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <section class="hero"><h2>Welcome! Order from your phone</h2></section>
-    <section id="menu" class="menu"></section>
-    <aside class="cart" id="cart">
-      <h3 onclick="document.getElementById('cart').classList.toggle('open')">Cart (tap to expand)</h3>
-      <div class="body" id="cartItems"></div>
+    <div class="cart">
+      <h3>🛒 Your Cart</h3>
+      <div class="body"></div>
       <div class="totals">
-        <div class="line"><span>Subtotal</span><span id="subtotal">₹0</span></div>
-        <div class="line"><span>GST (5%)</span><span id="gst">₹0</span></div>
-        <div class="line"><span>Service (3%)</span><span id="service">₹0</span></div>
-        <div class="line grand"><span>Total</span><span id="grand">₹0</span></div>
+        <div class="line"><span>Subtotal</span><span>₹0</span></div>
+        <div class="line"><span>Tax</span><span>₹0</span></div>
+        <div class="line grand"><span>Total</span><span>₹0</span></div>
       </div>
-      <div class="footer"><button class="btn btn-ghost" id="clearCart">Clear</button><button class="btn btn-accent" id="placeOrder">Place Order</button></div>
-    </aside>
-    <div class="floating-cart" id="floatingCart"><div class="icon">🛒</div><div id="floatingTotal">₹0</div><span id="cartCount">0</span></div>
-    <div class="toast" id="toast">✅ Thank you! Your order was sent.</div>
+      <div class="footer">
+        <button class="btn btn-accent">Place Order</button>
+        <button class="btn btn-ghost">Clear</button>
+      </div>
+    </div>
   </main>
+
+  <div class="floating-cart">🛒 Cart <span>0</span></div>
+  <div class="toast">Added to cart ✅</div>
+
   <script>
-    // --- Robust table number parsing & persistence ---
-    function getTableNo(){
-      try{
-        const url = new URL(window.location.href);
-        let t = url.searchParams.get('table');
-        // Fallback: #table=15
-        if(!t || !/^[0-9A-Za-z_-]+$/.test(t)){
-          const hash = url.hash.replace(/^#/, '');
-          const mHash = /(?:^|&)?table=([^&]+)/.exec(hash);
-          if(mHash) t = decodeURIComponent(mHash[1]);
-        }
-        // Fallback: /.../15
-        if(!t){
-          const segs = url.pathname.split('/').filter(Boolean);
-          const last = segs[segs.length-1];
-          if(/^[0-9]+$/.test(last)) t = last;
-        }
-        // Fallback: saved
-        if(!t){ t = localStorage.getItem('tableNo') || ''; }
-        return t || '—';
-      }catch(e){
-        return localStorage.getItem('tableNo') || '—';
-      }
-    }
+    const addBtns = document.querySelectorAll('.add-btn');
+    const cartBody = document.querySelector('.cart .body');
+    const totals = document.querySelector('.totals');
+    const subtotalEl = totals.querySelector('.line:nth-child(1) span:last-child');
+    const taxEl = totals.querySelector('.line:nth-child(2) span:last-child');
+    const totalEl = totals.querySelector('.grand span:last-child');
+    const floatingCart = document.querySelector('.floating-cart');
+    const toast = document.querySelector('.toast');
+    const cart = document.querySelector('.cart');
+    const cartToggle = document.querySelector('.cart h3');
+    const clearBtn = document.querySelector('.footer .btn-ghost');
 
-    let TABLE_NO = getTableNo();
-    document.getElementById('tableNo').textContent = TABLE_NO;
-    if(TABLE_NO==='—'){ document.getElementById('tableBanner').style.display='block'; }
-    console.log('Table detected =>', TABLE_NO, 'URL:', window.location.href);
-
-    // --- Demo MENU ---
-      const MENU = [
-      {id:'1', name:'Paneer Tikka', price:260, img:'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', desc:'Cottage cheese cubes marinated in spices & grilled.'},
-      {id:'2', name:'Chicken Wings', price:290, img:'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=400&auto=format&fit=crop', desc:'Crispy wings tossed in peri-peri sauce.'},
-      {id:'3', name:'Veg Biryani', price:340, img:'https://images.unsplash.com/photo-1630409346824-4f0e7b080087?q=80&w=1246&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', desc:'Fragrant basmati rice with vegetables & spices.'},
-      {id:'4', name:'Cold Coffee', price:149, img:'https://images.unsplash.com/photo-1459755486867-b55449bb39ff?q=80&w=400&auto=format&fit=crop', desc:'Blended coffee with ice cream.'}
-    ];
-
-    const menuEl = document.getElementById('menu');
-    const cartItemsEl = document.getElementById('cartItems');
-    const subtotalEl = document.getElementById('subtotal');
-    const gstEl = document.getElementById('gst');
-    const serviceEl = document.getElementById('service');
-    const grandEl = document.getElementById('grand');
-    const cartCountEl = document.getElementById('cartCount');
-    const floatingCart = document.getElementById('floatingCart');
-    const floatingTotalEl = document.getElementById('floatingTotal');
-    const toast = document.getElementById('toast');
-
-    let cart = {};
-
-    function renderMenu(){
-      menuEl.innerHTML = '';
-      MENU.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <img src="${item.img}" alt="${item.name}">
-          <div class="content">
-            <div>
-              <div class="title">
-                <h3>${item.name}</h3>
-                <div class="price">₹${item.price}</div>
-              </div>
-              <p class="desc">${item.desc}</p>
-            </div>
-            <button class="add-btn" onclick="addToCart('${item.id}')">Add to Cart</button>
-          </div>
-        `;
-        menuEl.appendChild(card);
-      });
-    }
-
-    function renderCart(){
-      cartItemsEl.innerHTML = '';
+    let cartItems = [];
+    function updateCart(){
+      cartBody.innerHTML = '';
       let subtotal = 0;
-      let count = 0;
-      Object.values(cart).forEach(it => {
-        subtotal += it.price * it.qty;
-        count += it.qty;
-        const row = document.createElement('div');
-        row.className = 'item';
-        row.innerHTML = `
-          <img src="${it.img}" alt="${it.name}">
-          <div>
-            <div>${it.name}</div>
-            <div>₹${it.price} × ${it.qty}</div>
-          </div>
-          <div>
-            <button onclick="changeQty('${it.id}',-1)">−</button>
-            <button onclick="changeQty('${it.id}',1)">+</button>
-          </div>
-        `;
-        cartItemsEl.appendChild(row);
+      cartItems.forEach((item,i)=>{
+        subtotal += item.price;
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = \`
+          <img src="\${item.img}">
+          <div>\${item.name}<br><small>₹\${item.price}</small></div>
+          <button onclick="removeItem(\${i})">❌</button>
+        \`;
+        cartBody.appendChild(div);
       });
-      const gst = Math.round(subtotal*0.05);
-      const service = Math.round(subtotal*0.03);
-      const grand = subtotal + gst + service;
-      subtotalEl.textContent = '₹' + subtotal;
-      gstEl.textContent = '₹' + gst;
-      serviceEl.textContent = '₹' + service;
-      grandEl.textContent = '₹' + grand;
-      cartCountEl.textContent = count;
-      floatingTotalEl.textContent = '₹' + grand;
-      floatingCart.style.display = count>0 ? 'flex' : 'none';
+      const tax = Math.round(subtotal * 0.05);
+      const total = subtotal + tax;
+      subtotalEl.textContent = "₹"+subtotal;
+      taxEl.textContent = "₹"+tax;
+      totalEl.textContent = "₹"+total;
+      floatingCart.querySelector('span').textContent = cartItems.length;
     }
-
-    function addToCart(id){
-      const item = MENU.find(m=>m.id===id);
-      if(!cart[id]) cart[id] = {...item, qty:0};
-      cart[id].qty++;
-      renderCart();
+    window.removeItem = function(i){
+      cartItems.splice(i,1);
+      updateCart();
     }
-
-    function changeQty(id,delta){
-      if(!cart[id]) return;
-      cart[id].qty += delta;
-      if(cart[id].qty<=0) delete cart[id];
-      renderCart();
-    }
-
-    document.getElementById('clearCart').addEventListener('click',()=>{cart={};renderCart();});
-
-    document.getElementById('placeOrder').addEventListener('click',()=>{
-      const lines = [];
-      lines.push(`Order from Table ${TABLE_NO}`);
-      Object.values(cart).forEach(it=>{
-        lines.push(`${it.name} × ${it.qty} = ₹${it.price*it.qty}`);
+    addBtns.forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const card = btn.closest('.card');
+        const name = card.querySelector('h3').textContent;
+        const price = parseInt(card.querySelector('.price').textContent.replace('₹',''));
+        const img = card.querySelector('img').src;
+        cartItems.push({name,price,img});
+        updateCart();
+        toast.style.display='block';
+        setTimeout(()=>toast.style.display='none',1200);
       });
-      lines.push(`Subtotal: ${subtotalEl.textContent}`);
-      lines.push(`GST: ${gstEl.textContent}`);
-      lines.push(`Service: ${serviceEl.textContent}`);
-      lines.push(`Total: ${grandEl.textContent}`);
-
-      const phone = "918970100123"; // TODO: replace with your WhatsApp number in international format
-      const text = encodeURIComponent(lines.join('\n'));
-      const url = `https://wa.me/${phone}?text=${text}`;
-      window.open(url,'_blank');
-      // Reset cart and close drawer after placing order
-      cart = {};
-      renderCart();
-      document.getElementById('cart').classList.remove('open');
-      // Thank-you toast
-      toast.style.display = 'block';
-      setTimeout(()=>{toast.style.display='none';},3000);
     });
-
-    // Floating cart opens drawer
     floatingCart.addEventListener('click',()=>{
-      document.getElementById('cart').classList.add('open');
+      cart.classList.toggle('open');
     });
-
-    // Change/Save table number
-    document.getElementById('saveTable').addEventListener('click',()=>{
-      const val = (document.getElementById('tableInput').value || '').trim();
-      if(!/^\d+$/.test(val)){ alert('Please enter a valid table number'); return; }
-      TABLE_NO = val;
-      localStorage.setItem('tableNo', TABLE_NO);
-      document.getElementById('tableNo').textContent = TABLE_NO;
-      document.getElementById('tableBanner').style.display='none';
+    cartToggle.addEventListener('click',()=>{
+      cart.classList.toggle('open');
     });
-    document.getElementById('changeTableBtn').addEventListener('click',()=>{
-      document.getElementById('tableBanner').style.display='block';
-      document.getElementById('tableInput').focus();
+    clearBtn.addEventListener('click',()=>{
+      cartItems=[];
+      updateCart();
     });
-
-    // Shrink header on scroll
-    window.addEventListener('scroll',()=>{
-      const header = document.getElementById('header');
-      const logo = document.getElementById('logo');
-      const brandTitle = document.getElementById('brandTitle');
-      if(window.scrollY > 50){
-        header.style.boxShadow = '0 2px 10px rgba(0,0,0,.1)';
-        logo.style.width = '24px';
-        logo.style.height = '24px';
-        brandTitle.style.fontSize = '14px';
-      } else {
-        header.style.boxShadow = '0 2px 6px rgba(0,0,0,.05)';
-        logo.style.width = '34px';
-        logo.style.height = '34px';
-        brandTitle.style.fontSize = '18px';
-      }
-    });
-
-    // Init
-    renderMenu();
   </script>
 </body>
 </html>
-
